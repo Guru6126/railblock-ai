@@ -44,8 +44,15 @@ def optimize_into_single_block(tasks, day_start, buffer_min=5):
         ends.append(end)
         intervals.append(interval)
 
-    # Tasks in the same block must not overlap each other (they run sequentially)
-    model.AddNoOverlap(intervals)
+    # Parallel Department Execution: Only enforce no-overlap for tasks WITHIN the same department.
+    # Tasks from different departments (e.g. Track vs Signal) can execute simultaneously in the block.
+    dept_intervals = {}
+    for i, t in enumerate(tasks):
+        dept_intervals.setdefault(t.department, []).append(intervals[i])
+        
+    for intervs in dept_intervals.values():
+        if len(intervs) > 1:
+            model.AddNoOverlap(intervs)
 
     # Objective: minimize the overall finish time (pack tightly) while
     # preferring higher-priority tasks to start earlier

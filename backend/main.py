@@ -146,6 +146,18 @@ def create_task(body: TaskCreate):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.delete("/api/tasks/{task_id}")
+def delete_task(task_id: str):
+    session = get_session()
+    task = session.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        session.close()
+        raise HTTPException(404, "Task not found")
+    
+    session.delete(task)
+    session.commit()
+    session.close()
+    return {"status": "success"}
 
 @app.get("/api/trains")
 def get_trains():
@@ -167,8 +179,14 @@ def run_optimize(section: str = "SEC-14"):
     score_all(tasks)
     session.commit()
 
+    # Task Deferral: Only pack urgent tasks into the immediate block.
+    # We defer low-priority tasks to future blocks (unassigned).
+    urgent_tasks = [t for t in tasks if t.priority_score >= 0.4]
+    if not urgent_tasks:
+        urgent_tasks = tasks  # fallback if all tasks are low priority
+
     day_start = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
-    result = optimize_into_single_block(tasks, day_start)
+    result = optimize_into_single_block(urgent_tasks, day_start)
     if result is None:
         session.close()
         raise HTTPException(500, "Solver could not find a feasible schedule")
@@ -263,7 +281,21 @@ def root():
     return {"status": "ok", "message": "RailBlock AI — Railway Block Planning prototype API"}
 
 
-# ─── Settings Endpoints ───────────────────────────────────────────────────────
+@app.post("/api/blocks/{block_id}/approve")
+def approve_block(block_id: str):
+    session = get_session()
+    block = session.query(Block).filter(Block.id == block_id).first()
+    if not block:
+        session.close()
+        raise HTTPException(404, "Block not found")
+    
+    block.status = BlockStatus.ACTIVE
+    session.commit()
+    session.close()
+    return {"status": "success"}
+
+
+# ── Artificial Intelligence Endpoints (via Groq) ───────────────────────────────────────────────────────
 
 class GroqKeyRequest(BaseModel):
     api_key: str

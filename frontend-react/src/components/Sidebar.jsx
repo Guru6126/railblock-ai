@@ -5,6 +5,10 @@ import {
   Layers,
   Activity,
   TrainFront,
+  CheckSquare,
+  BarChart3,
+  BookOpen,
+  User,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
@@ -25,6 +29,21 @@ export default function Sidebar() {
       label: "Live Monitor",
       icon: Activity,
       alertBadge: alerts.length > 0,
+    },
+    {
+      id: "coa-approval",
+      label: "COA Approval",
+      icon: CheckSquare,
+    },
+    {
+      id: "ai-metrics",
+      label: "AI Metrics & KPIs",
+      icon: BarChart3,
+    },
+    {
+      id: "how-it-works",
+      label: "How It Works",
+      icon: BookOpen,
     },
   ];
 
@@ -92,16 +111,30 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer Info */}
-      <div className="p-4 border-t border-[#E2E8F0] bg-slate-50/50">
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
-              Ministry of Railways
-            </span>
-            <span className="text-xs font-semibold text-[#1F3864]">SIH 2026 · PS-26027</span>
+      {/* Bottom Section (User & Footer) */}
+      <div className="mt-auto">
+        {/* User Profile */}
+        <div className="p-4 flex items-center gap-3 hover:bg-slate-50 cursor-pointer transition-colors border-t border-[#E2E8F0]">
+          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center border border-blue-200">
+            <User className="w-5 h-5 text-blue-600" />
           </div>
-          <div className="w-2 h-2 rounded-full bg-[#16A34A] pulse-glow" title="System Online" />
+          <div>
+            <p className="text-xs font-bold text-[#1F3864]">Admin User</p>
+            <p className="text-[10px] text-[#64748B] font-medium mt-0.5">System Administrator</p>
+          </div>
+        </div>
+
+        {/* Footer Info */}
+        <div className="p-4 border-t border-[#E2E8F0] bg-slate-50/50">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] block">
+                Ministry of Railways
+              </span>
+              <span className="text-xs font-semibold text-[#1F3864]">SIH 2026 · PS-26027</span>
+            </div>
+            <div className="w-2 h-2 rounded-full bg-[#16A34A] pulse-glow" title="System Online" />
+          </div>
         </div>
       </div>
     </aside>

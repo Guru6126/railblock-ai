@@ -344,9 +344,6 @@ export default function Optimizer() {
                     Window: {blockStartFormatted} – {blockEndFormatted} ({blockDuration} min)
                   </span>
                 </div>
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">
-                  -67% Disruption
-                </span>
               </div>
 
               {/* Execution Sequence inside unified block */}
@@ -394,79 +391,6 @@ export default function Optimizer() {
           </div>
         </div>
       </div>
-
-      {/* Central Run Optimizer Action Bar */}
-      <div className="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center">
-            <Cpu className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-[#1F3864]">
-              Execute CP-SAT Constraint Optimization
-            </h3>
-            <p className="text-xs text-[#64748B]">
-              Calculates shortest feasible combined window respecting gang overlap and safety margins
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <button
-            onClick={handleRunOptimizer}
-            disabled={optimizing}
-            className="flex-1 md:flex-initial flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#1F3864] hover:bg-[#182c4f] text-white text-sm font-bold shadow-md shadow-blue-900/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-          >
-            <Layers className={`w-4 h-4 ${optimizing ? "animate-spin" : ""}`} />
-            <span>{optimizing ? "Solving Constraints..." : `Run Optimizer (${tasks.length} → 1)`}</span>
-          </button>
-
-
-
-
-        </div>
-      </div>
-
-
-
-      {/* AI Summary Card (Section Controller Handover Briefing) */}
-      {(aiBriefing || aiError || aiLoading) && (
-        <div className="bg-white rounded-2xl border border-blue-200 shadow-lg p-6 space-y-4 animate-slide-down">
-          <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="font-bold text-base text-[#1F3864]">
-                  AI Section Controller Briefing
-                </h3>
-                <p className="text-xs text-[#64748B]">
-                  Handover briefing synthesized by RailBlock AI Engine
-                </p>
-              </div>
-            </div>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded bg-blue-100 text-[#2563EB]">
-              {aiLoading ? "Generating..." : "Ready for Handover"}
-            </span>
-          </div>
-
-          {aiLoading ? (
-            <div className="flex items-center gap-3 p-4 text-blue-600 bg-blue-50 rounded-xl border border-blue-100">
-              <Sparkles className="w-5 h-5 animate-spin" />
-              <span className="text-sm font-semibold">Generating AI explanation of the optimized block based on metrics...</span>
-            </div>
-          ) : aiError ? (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-xs text-[#DC2626]">
-              {aiError}
-            </div>
-          ) : (
-            <div className="bg-slate-50/80 rounded-xl p-5 border border-[#E2E8F0] text-sm text-[#1E293B]">
-              <FormattedAiText text={aiBriefing} />
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

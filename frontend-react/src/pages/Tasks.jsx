@@ -11,6 +11,7 @@ import {
   Layers,
   Plus,
   X,
+  Trash2,
 } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import { api } from "../services/api";
@@ -52,12 +53,24 @@ export default function Tasks() {
         return;
       }
       await api.addTask(newTask);
-      showToast("Task added successfully", "success");
+      await api.optimize(activeSection);
+      showToast("Task added and schedule automatically optimized", "success");
       setShowAddModal(false);
       setNewTask({ ...newTask, defect_desc: "" });
       refreshAll();
     } catch (err) {
       showToast("Failed to add task: " + err.message, "danger");
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await api.deleteTask(taskId);
+      showToast("Task deleted successfully", "success");
+      await api.optimize(activeSection);
+      refreshAll();
+    } catch (err) {
+      showToast("Failed to delete task: " + err.message, "danger");
     }
   };
 
@@ -180,14 +193,6 @@ export default function Tasks() {
             <Plus className="w-4 h-4" />
             <span>Add Task</span>
           </button>
-          <button
-            onClick={handleAiPrioritize}
-            disabled={aiPrioritizing}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white text-sm font-semibold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-          >
-            <Sparkles className={`w-4 h-4 ${aiPrioritizing ? 'animate-spin' : ''}`} />
-            <span>{aiPrioritizing ? 'Prioritizing...' : 'AI Prioritize All Tasks'}</span>
-          </button>
         </div>
       </div>
 
@@ -289,7 +294,8 @@ export default function Tasks() {
                   </div>
                 </th>
               <th className="py-3.5 px-4">Block Status</th>
-                <th className="py-3.5 px-4">AI Risk Score</th>
+                <th className="py-3.5 px-4">COA Approval</th>
+                <th className="py-3.5 px-4"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E2E8F0]">
@@ -404,23 +410,34 @@ export default function Tasks() {
                         )}
                       </td>
 
-                      {/* AI Risk Score */}
+                      {/* COA Approval */}
                       <td className="py-4 px-4 whitespace-nowrap">
-                        {aiPriorityMap[task.id] ? (
-                          <div className="flex items-center gap-2">
-                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${
-                              aiPriorityMap[task.id].ai_risk_score >= 80 ? 'bg-red-100 text-red-700 border-red-200' :
-                              aiPriorityMap[task.id].ai_risk_score >= 60 ? 'bg-amber-100 text-amber-700 border-amber-200' :
-                              aiPriorityMap[task.id].ai_risk_score >= 40 ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
-                              'bg-emerald-100 text-emerald-700 border-emerald-200'
-                            }`}>
-                              {aiPriorityMap[task.id].ai_risk_score}/100
+                        {task.block_id ? (
+                          blocks.find(b => b.id === task.block_id)?.status === "active" ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Approved</span>
                             </span>
-                            <span className="text-[10px] text-[#64748B]">{aiPriorityMap[task.id].risk_level}</span>
-                          </div>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-[#D97706] border border-amber-200">
+                              <Clock className="w-3.5 h-3.5" />
+                              <span>Not Approved</span>
+                            </span>
+                          )
                         ) : (
-                          <span className="text-[11px] text-slate-400">—</span>
+                           <span className="text-[11px] text-slate-400">—</span>
                         )}
+                      </td>
+
+                      {/* Delete Action */}
+                      <td className="py-4 px-4 whitespace-nowrap text-right">
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 rounded-md transition-colors"
+                          title="Delete Task"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   );

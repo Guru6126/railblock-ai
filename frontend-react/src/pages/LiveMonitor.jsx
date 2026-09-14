@@ -169,9 +169,9 @@ export default function LiveMonitor() {
           </div>
 
           {/* Railway Tracks background */}
-          <div className="relative h-24 bg-slate-900 rounded-2xl p-3 flex flex-col justify-center overflow-hidden shadow-inner">
+          <div className="relative h-24 bg-slate-900 rounded-2xl p-3 flex flex-col justify-center shadow-inner">
             {/* Sleeper lines background */}
-            <div className="absolute inset-0 opacity-20 bg-[repeating-linear-gradient(90deg,#fff_0,#fff_2px,transparent_0,transparent_16px)] pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl opacity-20 bg-[repeating-linear-gradient(90deg,#fff_0,#fff_2px,transparent_0,transparent_16px)] pointer-events-none" />
 
             {/* Rails */}
             <div className="w-full h-0.5 bg-slate-400/80 mb-4" />
@@ -385,9 +385,9 @@ export default function LiveMonitor() {
                         >
                           {alert.action_taken}
                         </span>
-                        <span className="text-xs text-[#64748B] flex items-center gap-1 font-mono">
+                        <span className="text-xs text-[#64748B] flex items-center gap-1 font-mono" title="Time when this alert was generated">
                           <Clock className="w-3 h-3" />
-                          {alert.created_at
+                          Scanned: {alert.created_at
                             ? new Date(alert.created_at).toLocaleTimeString()
                             : "Live"}
                         </span>

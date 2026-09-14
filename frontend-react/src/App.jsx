@@ -6,6 +6,9 @@ import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import Optimizer from "./pages/Optimizer";
 import LiveMonitor from "./pages/LiveMonitor";
+import CoaApproval from "./pages/CoaApproval";
+import AiMetrics from "./pages/AiMetrics";
+import HowItWorks from "./pages/HowItWorks";
 import { AlertCircle, X } from "lucide-react";
 
 function MainContent() {
@@ -21,6 +24,12 @@ function MainContent() {
         return <Optimizer />;
       case "monitor":
         return <LiveMonitor />;
+      case "coa-approval":
+        return <CoaApproval />;
+      case "ai-metrics":
+        return <AiMetrics />;
+      case "how-it-works":
+        return <HowItWorks />;
       default:
         return <Dashboard />;
     }

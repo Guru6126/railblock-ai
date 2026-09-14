@@ -81,11 +81,16 @@ export const api = {
   addTask: (taskData) =>
     request("/api/tasks", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     }),
+  deleteTask: (taskId) =>
+    request(`/api/tasks/${taskId}`, { method: "DELETE" }),
   getTrains: () => request("/api/trains"),
   getBlocks: () => request("/api/blocks"),
+  getKpis: () => request("/api/kpis"),
   getAlerts: () => request("/api/alerts"),
+  approveBlock: (id) => request(`/api/blocks/${id}/approve`, { method: "POST" }),
   resetScenario: () => request("/api/reset", { method: "POST" }),
   optimize: (section = getSectionName()) =>
     request(`/api/optimize?section=${encodeURIComponent(section)}`, { method: "POST" }),
